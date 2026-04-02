@@ -61,8 +61,8 @@ O front usa proxy do Vite para a API em dev (`/api` → `http://localhost:3000`)
 Eu uso confirmação (`window.confirm`) antes de remover tópico/microvitória para reduzir exclusões acidentais, como é uma ação destrutiva, prefiro pedir validação explícita do usuário.
 
 ## Deploy
-- Front-end: **TODO** 
-- API: **TODO** 
+- Front-end: **TODO** https://evolucaoestudos.netlify.app/
+- API: **TODO** https://study-evolution-map.vercel.app/
 
 ## Variáveis de ambiente
 Se você publicar a API em outra URL, configure no front:
