@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 import { Topico } from '../types'
 
 type Props = {
@@ -26,10 +27,17 @@ function FormularioMicroVitoria({ topicos, onCriarMicroVitoria }: Props) {
 
     setErro('')
     setCarregando(true)
-    await onCriarMicroVitoria(Number(topicoId), descricao.trim())
-    setDescricao('')
-    setTopicoId('')
-    setCarregando(false)
+    try {
+      await onCriarMicroVitoria(Number(topicoId), descricao.trim())
+      toast.success('Microvitória registrada!')
+      setDescricao('')
+      setTopicoId('')
+    } catch (err) {
+      const mensagem = err instanceof Error ? err.message : 'Não foi possível registrar a microvitória.'
+      toast.error(mensagem)
+    } finally {
+      setCarregando(false)
+    }
   }
 
   return (

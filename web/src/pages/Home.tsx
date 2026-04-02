@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import Swal from 'sweetalert2'
 import { Topico, MicroVitoria } from '../types'
 import {
   getTopicos,
@@ -69,28 +70,71 @@ function Home() {
   }
 
   async function handleDeletarTopico(id: number) {
-    const confirmado = window.confirm(
-      'Tem certeza que deseja deletar este tópico? As microvitórias existentes serão mantidas.'
-    )
-    if (!confirmado) return
+    const result = await Swal.fire({
+      title: 'Deletar tópico?',
+      text: 'As microvitórias existentes serão mantidas.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Deletar',
+      cancelButtonText: 'Cancelar',
+    })
 
-    await deletarTopico(id)
-    setTopicos(topicos.filter((t) => t.id !== id))
+    if (!result.isConfirmed) return
 
-    // Se o tópico deletado estava selecionado, deseleciona
-    if (topicoSelecionadoId === id) {
-      setTopicoSelecionadoId(null)
+    try {
+      await deletarTopico(id)
+      setTopicos(topicos.filter((t) => t.id !== id))
+
+      if (topicoSelecionadoId === id) {
+        setTopicoSelecionadoId(null)
+      }
+
+      await Swal.fire({
+        title: 'Tópico deletado',
+        icon: 'success',
+        timer: 1200,
+        showConfirmButton: false,
+      })
+    } catch (err) {
+      const mensagem = err instanceof Error ? err.message : 'Não foi possível deletar o tópico.'
+      await Swal.fire({
+        title: 'Erro',
+        text: mensagem,
+        icon: 'error',
+      })
     }
   }
 
   async function handleDeletarMicroVitoria(id: number) {
-    const confirmado = window.confirm(
-      'Tem certeza que deseja deletar esta microvitória?'
-    )
-    if (!confirmado) return
+    const result = await Swal.fire({
+      title: 'Deletar microvitória?',
+      text: 'Essa ação não pode ser desfeita.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Deletar',
+      cancelButtonText: 'Cancelar',
+    })
 
-    await deletarMicroVitoria(id)
-    setMicroVitorias(microVitorias.filter((mv) => mv.id !== id))
+    if (!result.isConfirmed) return
+
+    try {
+      await deletarMicroVitoria(id)
+      setMicroVitorias(microVitorias.filter((mv) => mv.id !== id))
+
+      await Swal.fire({
+        title: 'Microvitória deletada',
+        icon: 'success',
+        timer: 1200,
+        showConfirmButton: false,
+      })
+    } catch (err) {
+      const mensagem = err instanceof Error ? err.message : 'Não foi possível deletar a microvitória.'
+      await Swal.fire({
+        title: 'Erro',
+        text: mensagem,
+        icon: 'error',
+      })
+    }
   }
 
   const topicoSelecionado = topicos.find((t) => t.id === topicoSelecionadoId)

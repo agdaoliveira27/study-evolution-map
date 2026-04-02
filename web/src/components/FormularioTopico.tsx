@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 type Props = {
   onCriarTopico: (nome: string) => Promise<void>
@@ -19,9 +20,16 @@ function FormularioTopico({ onCriarTopico }: Props) {
 
     setErro('')
     setCarregando(true)
-    await onCriarTopico(nome.trim())
-    setNome('')
-    setCarregando(false)
+    try {
+      await onCriarTopico(nome.trim())
+      toast.success('Tópico criado!')
+      setNome('')
+    } catch (err) {
+      const mensagem = err instanceof Error ? err.message : 'Não foi possível criar o tópico.'
+      toast.error(mensagem)
+    } finally {
+      setCarregando(false)
+    }
   }
 
   return (
